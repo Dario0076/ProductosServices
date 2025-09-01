@@ -1,0 +1,10 @@
+-- Insertar categorías básicas solo si no existen
+INSERT IGNORE INTO categorias (id, nombre, descripcion) VALUES 
+(1, 'Tecnologia', 'Dispositivos electronicos, computadoras, celulares'),
+(2, 'Hogar', 'Articulos para el hogar, muebles, decoracion'),
+(3, 'Ropa', 'Vestimenta, calzado, accesorios'),
+(4, 'Deportes', 'Equipos deportivos, ropa deportiva'),
+(5, 'Libros', 'Literatura, textos educativos, revistas'),
+(6, 'Automovil', 'Repuestos, accesorios para vehiculos'),
+(7, 'Salud', 'Productos de salud, medicamentos, primeros auxilios'),
+(8, 'Alimentacion', 'Alimentos, bebidas, suplementos');

@@ -5,15 +5,21 @@ import com.inventario.ProductosService.service.productosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/productos")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class productosController {
     @Autowired
     private productosService productosService;
+    
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @GetMapping
     public List<productos> getAllProductos() {
@@ -28,7 +34,22 @@ public class productosController {
 
     @PostMapping
     public productos createProducto(@RequestBody productos producto) {
-        return productosService.saveProducto(producto);
+        // Guardar el producto
+        productos savedProducto = productosService.saveProducto(producto);
+        
+        // Crear stock inicial automáticamente
+        try {
+            Map<String, Object> stockData = new HashMap<>();
+            stockData.put("productoId", savedProducto.getId());
+            stockData.put("cantidadActual", savedProducto.getCantidad() != null ? savedProducto.getCantidad() : 0);
+            stockData.put("umbralMinimo", 5); // Umbral mínimo por defecto
+            
+            restTemplate.postForObject("http://localhost:8081/stock", stockData, Object.class);
+        } catch (Exception e) {
+            System.err.println("Error al crear stock inicial para producto " + savedProducto.getId() + ": " + e.getMessage());
+        }
+        
+        return savedProducto;
     }
 
     @PutMapping("/{id}")
@@ -47,5 +68,14 @@ public class productosController {
         }
         productosService.deleteProducto(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/health")
+    public Map<String, Object> health() {
+        Map<String, Object> status = new HashMap<>();
+        status.put("status", "UP");
+        status.put("service", "ProductosService");
+        status.put("timestamp", System.currentTimeMillis());
+        return status;
     }
 }
