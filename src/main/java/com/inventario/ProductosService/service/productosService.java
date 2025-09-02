@@ -2,7 +2,6 @@ package com.inventario.ProductosService.service;
 
 import com.inventario.ProductosService.entity.productos;
 import com.inventario.ProductosService.repository.productosRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.Optional;
 
 @Service
 public class productosService {
-    @Autowired
-    private productosRepository productosRepository;
+    private final productosRepository productosRepository;
+
+    public productosService(productosRepository productosRepository) {
+        this.productosRepository = productosRepository;
+    }
 
     public List<productos> getAllProductos() {
         return productosRepository.findByActivoTrue();

@@ -1,10 +1,6 @@
 package com.inventario.ProductosService.entity;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -12,8 +8,13 @@ import lombok.Data;
 @Table(name = "categorias")
 public class Categoria {
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    
+    @Column(name = "nombre", length = 100, nullable = false)
     private String nombre;
+    
+    @Column(name = "descripcion", length = 500)
     private String descripcion;
 }

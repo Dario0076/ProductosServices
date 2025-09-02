@@ -2,7 +2,8 @@ package com.inventario.ProductosService.controller;
 
 import com.inventario.ProductosService.entity.productos;
 import com.inventario.ProductosService.service.productosService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -14,12 +15,16 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/productos")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class productosController {
-    @Autowired
-    private productosService productosService;
-    
-    private final RestTemplate restTemplate = new RestTemplate();
+    private static final Logger logger = LoggerFactory.getLogger(productosController.class);
+    private static final int DEFAULT_UMBRAL_MINIMO = 5;
+    private final productosService productosService;
+    private final RestTemplate restTemplate;
+
+    public productosController(productosService productosService, RestTemplate restTemplate) {
+        this.productosService = productosService;
+        this.restTemplate = restTemplate;
+    }
 
     @GetMapping
     public List<productos> getAllProductos() {
@@ -42,11 +47,11 @@ public class productosController {
             Map<String, Object> stockData = new HashMap<>();
             stockData.put("productoId", savedProducto.getId());
             stockData.put("cantidadActual", savedProducto.getCantidad() != null ? savedProducto.getCantidad() : 0);
-            stockData.put("umbralMinimo", 5); // Umbral mínimo por defecto
+            stockData.put("umbralMinimo", DEFAULT_UMBRAL_MINIMO); // Umbral mínimo por defecto
             
             restTemplate.postForObject("http://localhost:8081/stock", stockData, Object.class);
         } catch (Exception e) {
-            System.err.println("Error al crear stock inicial para producto " + savedProducto.getId() + ": " + e.getMessage());
+            logger.warn("Error al crear stock inicial para producto {}: {}", savedProducto.getId(), e.getMessage());
         }
         
         return savedProducto;

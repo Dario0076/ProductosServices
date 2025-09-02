@@ -2,7 +2,6 @@ package com.inventario.ProductosService.service;
 
 import com.inventario.ProductosService.entity.Categoria;
 import com.inventario.ProductosService.repository.CategoriaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.Optional;
 @Service
 public class CategoriaService {
     
-    @Autowired
-    private CategoriaRepository categoriaRepository;
+    private final CategoriaRepository categoriaRepository;
+    
+    public CategoriaService(CategoriaRepository categoriaRepository) {
+        this.categoriaRepository = categoriaRepository;
+    }
 
     public List<Categoria> getAllCategorias() {
         return categoriaRepository.findAll();
