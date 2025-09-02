@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/categorias")
+@CrossOrigin("*")
 public class CategoriaController {
     
     private final CategoriaService categoriaService;

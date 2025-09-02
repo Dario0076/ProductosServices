@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/productos")
+@CrossOrigin("*")
 public class productosController {
     private static final Logger logger = LoggerFactory.getLogger(productosController.class);
     private static final int DEFAULT_UMBRAL_MINIMO = 5;
